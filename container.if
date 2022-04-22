@@ -881,3 +881,67 @@ interface(`container_spc_rw_pipes',`
 
 	allow $1 spc_t:fifo_file rw_inherited_fifo_file_perms;
 ')
+
+########################################
+## <summary>
+##	Execute container in the container domain.
+## </summary>
+## <param name="domain">
+## <summary>
+##	Domain allowed to transition.
+## </summary>
+## </param>
+#
+interface(`container_kublet_domtrans',`
+	gen_require(`
+		type kublet_t, kublet_exec_t;
+	')
+
+	corecmd_search_bin($1)
+	domtrans_pattern($1, kublet_exec_t, kublet_t)
+')
+
+########################################
+## <summary>
+##	Execute kublet_exec_t in the kublet_t domain
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed to transition.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access.
+##	</summary>
+## </param>
+## <rolecap/>
+#
+interface(`container_kublet_run',`
+	gen_require(`
+		type kublet_t;
+		class dbus send_msg;
+	')
+
+	container_kublet_domtrans($1)
+	role $2 types kublet_t;
+')
+
+########################################
+## <summary>
+##	Connect to kublet over a unix stream socket.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`container_kublet_stream_connect',`
+	gen_require(`
+		type kublet_t, container_var_run_t;
+	')
+
+	files_search_pids($1)
+	stream_connect_pattern($1, container_var_run_t, container_var_run_t, kublet_t)
+')
