@@ -471,7 +471,6 @@ modutils_domtrans_kmod(container_runtime_domain)
 systemd_status_all_unit_files(container_runtime_domain)
 systemd_start_systemd_services(container_runtime_domain)
 systemd_dbus_chat_logind(container_runtime_domain)
-systemd_chat_resolved(container_runtime_domain)
 
 userdom_stream_connect(container_runtime_domain)
 userdom_search_user_home_content(container_runtime_domain)
@@ -1354,6 +1353,7 @@ allow container_device_t device_node:chr_file rw_chr_file_perms;
 container_domain_template(container_device_plugin)
 allow container_device_plugin_t device_node:chr_file rw_chr_file_perms;
 dev_rw_sysfs(container_device_plugin_t)
+kernel_read_debugfs(container_device_plugin_t)
 container_kubelet_stream_connect(container_device_plugin_t)
 
 # Standard container which needs to be allowed to use any device and
